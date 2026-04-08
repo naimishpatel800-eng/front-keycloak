@@ -1,0 +1,77 @@
+/* Sidebar.css */
+.sidebar {
+  width: 250px;
+  transition: width 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  background-color: #1e1e2f;
+  color: #fff;
+  padding: 1rem 0.5rem;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+/* Collapse button */
+.sidebar-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* App title */
+.sidebar-title {
+  margin: 0;
+  padding: 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+/* PanelMenu adjustments */
+.p-panelmenu-custom .p-menuitem-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+
+/* Collapsed: center icons and hide labels/arrows */
+.sidebar.collapsed .p-panelmenu .p-menuitem-link {
+  padding-left: 0.5rem !important;
+  justify-content: center;
+}
+
+.sidebar.collapsed .p-panelmenu .p-menuitem-text {
+  display: none;
+}
+
+.sidebar.collapsed .p-panelmenu .p-submenu-icon {
+  display: none;
+}
+
+/* Logout button */
+.sidebar-logout {
+  width: 100%;
+  background-color: #d9534f;
+  border: none;
+  color: #fff;
+  padding: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: left;
+  transition: all 0.3s;
+}
+
+.sidebar.collapsed .sidebar-logout {
+  text-align: center;
+}

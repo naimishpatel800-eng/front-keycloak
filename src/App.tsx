@@ -187,9 +187,18 @@
 
   
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import keycloak from "./KeycloakService";
-import DashboardPage from "./Dashboard/DashboardPage";
+
+// Pages
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+
+// Sidebar
+import Sidebar from "./components/Sidebar";
 
 const App: React.FC = () => {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
@@ -198,16 +207,13 @@ const App: React.FC = () => {
   useEffect(() => {
     keycloak
       .init({
-        onLoad: "login-required", // forces login and shows Keycloak login page
+        onLoad: "login-required",
         pkceMethod: "S256",
         checkLoginIframe: false,
       })
       .then(auth => {
         setAuthenticated(auth);
         setLoading(false);
-        if (auth) {
-          console.log("Authenticated:", auth, "Token:", keycloak.token);
-        }
       })
       .catch(err => {
         console.error("Keycloak init error:", err);
@@ -215,28 +221,23 @@ const App: React.FC = () => {
       });
   }, []);
 
-  const logout = () => {
-    keycloak.logout();
-  };
-
-  if (loading) {
-    return <div>Loading Keycloak...</div>;
-  }
-
-  if (!authenticated) {
-    return <div>Redirecting to login...</div>;
-  }
+  if (loading) return <div>Loading Keycloak...</div>;
+  if (!authenticated) return <div>Redirecting to login...</div>;
 
   return (
     <Router>
-      <div style={{ padding: "10px" }}>
-        <button onClick={logout} style={{ marginBottom: "20px" }}>
-          Logout
-        </button>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
+      <div style={{ display: "flex" }}>
+        <Sidebar />
+        <div style={{ flex: 1, padding: "20px" }}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
