@@ -186,50 +186,55 @@
 
 
   
-// src/App.tsx
-// src/App.tsx
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import keycloak from "./KeycloakService";
 import DashboardPage from "./Dashboard/DashboardPage";
 
 const App: React.FC = () => {
-  const [token, setToken] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-
-  // Guard to prevent double init
-  let keycloakInitialized = false;
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (keycloakInitialized) return; // prevent double init
-    keycloakInitialized = true;
-
     keycloak
       .init({
-        onLoad: "login-required",
-        pkceMethod: "S256", // Required for SPA
+        onLoad: "login-required", // forces login and shows Keycloak login page
+        pkceMethod: "S256",
         checkLoginIframe: false,
       })
       .then(auth => {
         setAuthenticated(auth);
-        if (auth) setToken(keycloak.token ?? null);
-        console.log("Authenticated:", auth, "Token:", keycloak.token);
+        setLoading(false);
+        if (auth) {
+          console.log("Authenticated:", auth, "Token:", keycloak.token);
+        }
       })
-      .catch(err => console.error("Keycloak init error:", err));
+      .catch(err => {
+        console.error("Keycloak init error:", err);
+        setLoading(false);
+      });
   }, []);
 
+  const logout = () => {
+    keycloak.logout();
+  };
+
+  if (loading) {
+    return <div>Loading Keycloak...</div>;
+  }
+
   if (!authenticated) {
-    return <div>Loading Keycloak login...</div>;
+    // The user will see the Keycloak login page (with Google button if configured in Keycloak)
+    return <div>Redirecting to login...</div>;
   }
 
   return (
     <Router>
       <div style={{ padding: "10px" }}>
-        {/* Logout button outside Routes */}
-        <button onClick={() => keycloak.logout()}>Logout</button>
-
+        <button onClick={logout} style={{ marginBottom: "20px" }}>
+          Logout
+        </button>
         <Routes>
-          {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
