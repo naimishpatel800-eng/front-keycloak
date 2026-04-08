@@ -224,7 +224,6 @@ const App: React.FC = () => {
   }
 
   if (!authenticated) {
-    // The user will see the Keycloak login page (with Google button if configured in Keycloak)
     return <div>Redirecting to login...</div>;
   }
 

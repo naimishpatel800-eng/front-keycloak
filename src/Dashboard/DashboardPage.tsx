@@ -90,13 +90,24 @@
 // export default DashboardPage;
 
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import keycloak from "../KeycloakService";
 
 const DashboardPage: React.FC = () => {
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  useEffect(() => {
+    if (keycloak.tokenParsed) {
+      const parsed = keycloak.tokenParsed as any;
+      setUsername(parsed.preferred_username || "Unknown");
+      setEmail(parsed.email || "");
+     
+    }
+  }, []);
+
   const handleApiCall = async () => {
     try {
-      // Refresh token if expiring in 30s
       const refreshed = await keycloak.updateToken(30);
       console.log(
         "[Dashboard] Token",
@@ -109,7 +120,6 @@ const DashboardPage: React.FC = () => {
         return;
       }
 
-      // Call Spring Boot API
       const response = await fetch("http://localhost:8080/api/hello", {
         method: "GET",
         headers: {
@@ -124,17 +134,22 @@ const DashboardPage: React.FC = () => {
 
       const data = await response.text();
       console.log("[Dashboard] API response:", data);
-      alert(data); // This will show: "Hello from secured API!"
+      alert(data);
     } catch (err) {
       console.error(err);
       alert("API call failed due to network error");
     }
   };
-
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Dashboard</h2>
-      <button onClick={handleApiCall}>Call /hello API</button>
+      <p>Username: <strong>{username}</strong></p>
+      <p>Email: <strong>{email}</strong></p>
+      
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+        <button onClick={handleApiCall}>Call /hello API</button>
+    
+      </div>
     </div>
   );
 };
