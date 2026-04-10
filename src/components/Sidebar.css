@@ -2,7 +2,6 @@
 
 .sb {
   width: 255px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   background: #141414;

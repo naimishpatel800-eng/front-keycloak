@@ -1,0 +1,12 @@
+.app-layout {
+  display: flex;
+}
+
+.app-content {
+  flex: 1;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(90deg, rgb(105, 21, 21) 1%, rgba(8, 8, 8, 1) 19%, rgba(8, 8, 8, 1) 79%, rgba(105, 17, 17, 1) 100%);
+  color: #ffffff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
