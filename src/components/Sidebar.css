@@ -1,77 +1,265 @@
-/* Sidebar.css */
-.sidebar {
-  width: 250px;
-  transition: width 0.3s;
+/* Netflix Theme — Red #E50914 | Black #141414 | White #FFFFFF */
+
+.sb {
+  width: 255px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100vh;
-  background-color: #1e1e2f;
-  color: #fff;
-  padding: 1rem 0.5rem;
+  background: #141414;
+  border-right: 1px solid #2a2a2a;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
-.sidebar.collapsed {
-  width: 70px;
-}
+.sb--collapsed { width: 68px; }
 
-/* Collapse button */
-.sidebar-toggle {
-  width: 100%;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  text-align: left;
-  white-space: nowrap;
-}
-
-/* App title */
-.sidebar-title {
-  margin: 0;
-  padding: 0 0.5rem;
-  font-size: 1.5rem;
-}
-
-/* PanelMenu adjustments */
-.p-panelmenu-custom .p-menuitem-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* ─── HEADER ─── */
+.sb__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 18px 14px 14px;
+  gap: 8px;
+  border-bottom: 2px solid #E50914;
 }
 
-/* Collapsed: center icons and hide labels/arrows */
-.sidebar.collapsed .p-panelmenu .p-menuitem-link {
-  padding-left: 0.5rem !important;
-  justify-content: center;
+.sb__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
 }
 
-.sidebar.collapsed .p-panelmenu .p-menuitem-text {
-  display: none;
+.sb__logo {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 8px;
+  animation: logoPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px #E5091499);
 }
 
-.sidebar.collapsed .p-panelmenu .p-submenu-icon {
-  display: none;
+@keyframes logoPulse {
+  0%   { transform: scale(1);    filter: drop-shadow(0 0 6px #E5091466); }
+  50%  { transform: scale(1.12); filter: drop-shadow(0 0 14px #E50914cc); }
+  100% { transform: scale(1);    filter: drop-shadow(0 0 6px #E5091466); }
 }
 
-/* Logout button */
-.sidebar-logout {
-  width: 100%;
-  background-color: #d9534f;
-  border: none;
-  color: #fff;
-  padding: 0.5rem;
-  cursor: pointer;
+.sb__app-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #E50914;
+  letter-spacing: 1px;
   white-space: nowrap;
-  text-align: left;
-  transition: all 0.3s;
+  text-transform: uppercase;
 }
 
-.sidebar.collapsed .sidebar-logout {
-  text-align: center;
+.sb__collapse-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
 }
+
+.sb__collapse-btn:hover {
+  background: #E50914;
+  border-color: #E50914;
+  color: #ffffff;
+}
+
+.sb__collapse-btn i { font-size: 0.75rem; }
+
+/* ─── USER CARD ─── */
+.sb__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 10px 4px;
+  padding: 10px 12px;
+  background: #1f1f1f;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sb__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px #E5091466;
+}
+
+.sb__avatar--center { margin: 8px auto 4px; }
+
+.sb__avatar i { color: #ffffff; font-size: 1rem; }
+
+.sb__user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.sb__user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.sb__user-role {
+  font-size: 0.72rem;
+  color: #E50914;
+  white-space: nowrap;
+}
+
+/* ─── DIVIDER ─── */
+.sb__divider {
+  height: 1px;
+  background: #2a2a2a;
+  margin: 8px 14px;
+}
+
+/* ─── NAV ─── */
+.sb__nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: #E50914 transparent;
+}
+
+.sb__nav::-webkit-scrollbar { width: 3px; }
+.sb__nav::-webkit-scrollbar-thumb {
+  background: #E50914;
+  border-radius: 4px;
+}
+
+/* ─── NAV ITEM ─── */
+.sb__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #999999;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.18s, color 0.18s;
+  font-family: inherit;
+}
+
+.sb__item:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.sb__item--active {
+  background: #E50914;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.sb__item--active .sb__icon { color: #ffffff !important; }
+
+.sb__item--open {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+/* ─── CHILDREN ─── */
+.sb__children {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  padding-left: 8px;
+  border-left: 2px solid #E50914;
+  margin-left: 20px;
+}
+
+.sb__item--child {
+  padding: 8px 10px;
+  font-size: 0.83rem;
+  color: #999999;
+}
+
+.sb__item--child:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+/* ─── ICON ─── */
+.sb__icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  color: #666666;
+  transition: color 0.18s;
+}
+
+.sb__item:hover .sb__icon { color: #ffffff; }
+.sb__item--active .sb__icon { color: #ffffff; }
+
+/* ─── LABEL ─── */
+.sb__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── ARROW ─── */
+.sb__arrow {
+  font-size: 0.7rem;
+  color: #666666;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+
+.sb__arrow--up { transform: rotate(180deg); }
+
+/* ─── FOOTER ─── */
+.sb__footer { padding: 0 8px 14px; }
+
+/* ─── LOGOUT ─── */
+.sb__item--logout { color: #E50914; }
+
+.sb__item--logout:hover {
+  background: #E50914;
+  color: #ffffff;
+}
+
+.sb__item--logout .sb__icon { color: #E50914; }
+.sb__item--logout:hover .sb__icon { color: #ffffff; }
+
+/* ─── COLLAPSED ─── */
+.sb--collapsed .sb__item {
+  justify-content: center;
+  padding: 10px;
+}
+
+.sb--collapsed .sb__collapse-btn { margin: 0 auto; }

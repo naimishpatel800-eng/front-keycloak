@@ -1,63 +1,150 @@
-// Sidebar.tsx
-import { PanelMenu } from "primereact/panelmenu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import keycloak from "../KeycloakService";
 import { useState } from "react";
 import "./Sidebar.css";
-import type { MenuItem } from "primereact/menuitem";
+import logo from "../logo/logo.svg";
+
+interface NavItem {
+  label: string;
+  icon: string;
+  path?: string;
+  children?: NavItem[];
+}
+
+const navItems: NavItem[] = [
+  { label: "Home",          icon: "pi-home",         path: "/home" },
+  { label: "Dashboard",     icon: "pi-chart-bar",    path: "/dashboard" },
+  { label: "Messages",      icon: "pi-inbox",        path: "/messages" },
+  { label: "Notifications", icon: "pi-bell",         path: "/notifications" },
+  {
+    label: "Reports", icon: "pi-file-pdf",
+    children: [
+      { label: "Sales",     icon: "pi-chart-line",   path: "/reports/sales" },
+      { label: "Analytics", icon: "pi-chart-pie",    path: "/reports/analytics" },
+    ],
+  },
+  {
+    label: "User", icon: "pi-users",
+    children: [
+      { label: "Profile",  icon: "pi-id-card",      path: "/profile" },
+      { label: "Settings", icon: "pi-cog",          path: "/settings" },
+    ],
+  },
+  { label: "About",    icon: "pi-info-circle",  path: "/about" },
+  { label: "Contact",  icon: "pi-envelope",     path: "/contact" },
+];
 
 const Sidebar: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate   = useNavigate();
+  const location   = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
-  // Menu items
-  const items: MenuItem[] = [
-    { label: "Home", icon: "pi pi-home", command: () => navigate("/home") },
-    { label: "Dashboard", icon: "pi pi-chart-bar", command: () => navigate("/dashboard") },
-    {
-      label: "User",
-      icon: "pi pi-user",
-      items: [
-        { label: "Profile", icon: "pi pi-id-card", command: () => navigate("/profile") },
-        { label: "Settings", icon: "pi pi-cog", command: () => alert("Settings clicked") },
-      ],
-    },
-    { label: "About", icon: "pi pi-info-circle", command: () => navigate("/about") },
-    { label: "Contact", icon: "pi pi-envelope", command: () => navigate("/contact") },
-  ];
+  const isActive = (path?: string) => !!path && location.pathname === path;
 
-  // Collapse effect: hide all labels and add tooltips
-  const renderItems = items.map((item: MenuItem) => ({
-    ...item,
-    label: collapsed ? "" : item.label,
-    title: item.label, // tooltip when collapsed
-    items: item.items?.map((sub: MenuItem) => ({
-      ...sub,
-      label: collapsed ? "" : sub.label,
-      title: sub.label,
-    })),
-  }));
+  const toggleGroup = (label: string) =>
+    setOpenGroup((prev) => (prev === label ? null : label));
 
   return (
-    <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-top">
-        {/* Collapse button */}
-        <button className="sidebar-toggle" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? "➡️" : "⬅️"} {!collapsed && "Collapse"}
+    <aside className={`sb ${collapsed ? "sb--collapsed" : ""}`}>
+
+      {/* ── HEADER ── */}
+      <div className="sb__header">
+        <div className="sb__brand">
+          <img src={logo} alt="logo" className="sb__logo" />
+          {!collapsed && <span className="sb__app-name">MyApp</span>}
+        </div>
+
+        <button
+          className="sb__collapse-btn"
+          onClick={() => setCollapsed(!collapsed)}
+          title="Toggle sidebar"
+        >
+          <i className={`pi ${collapsed ? "pi-chevron-right" : "pi-chevron-left"}`} />
         </button>
-
-        {/* App title */}
-        {!collapsed && <h2 className="sidebar-title">MyApp</h2>}
-
-        {/* PanelMenu */}
-        <PanelMenu model={renderItems} className="p-panelmenu-custom" />
       </div>
 
-      {/* Logout button */}
-      <button className="sidebar-logout" onClick={() => keycloak.logout()} title="Logout">
-        {collapsed ? "🚪" : "Logout"}
-      </button>
-    </div>
+      {/* ── USER CARD ── */}
+      {!collapsed && (
+        <div className="sb__user">
+          <div className="sb__avatar">
+            <i className="pi pi-user" />
+          </div>
+          <div className="sb__user-info">
+            <span className="sb__user-name">Admin User</span>
+            <span className="sb__user-role">Administrator</span>
+          </div>
+        </div>
+      )}
+      {collapsed && (
+        <div className="sb__avatar sb__avatar--center">
+          <i className="pi pi-user" />
+        </div>
+      )}
+
+      <div className="sb__divider" />
+
+      {/* ── NAV ── */}
+      <nav className="sb__nav">
+        {navItems.map((item) =>
+          item.children ? (
+            <div key={item.label} className="sb__group">
+              <button
+                className={`sb__item sb__item--group ${openGroup === item.label ? "sb__item--open" : ""}`}
+                onClick={() => !collapsed && toggleGroup(item.label)}
+                title={collapsed ? item.label : undefined}
+              >
+                <i className={`pi ${item.icon} sb__icon`} />
+                {!collapsed && (
+                  <>
+                    <span className="sb__label">{item.label}</span>
+                    <i className={`pi pi-chevron-down sb__arrow ${openGroup === item.label ? "sb__arrow--up" : ""}`} />
+                  </>
+                )}
+              </button>
+
+              {!collapsed && openGroup === item.label && (
+                <div className="sb__children">
+                  {item.children.map((child) => (
+                    <button
+                      key={child.label}
+                      className={`sb__item sb__item--child ${isActive(child.path) ? "sb__item--active" : ""}`}
+                      onClick={() => child.path && navigate(child.path)}
+                    >
+                      <i className={`pi ${child.icon} sb__icon`} />
+                      <span className="sb__label">{child.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              key={item.label}
+              className={`sb__item ${isActive(item.path) ? "sb__item--active" : ""}`}
+              onClick={() => item.path && navigate(item.path)}
+              title={collapsed ? item.label : undefined}
+            >
+              <i className={`pi ${item.icon} sb__icon`} />
+              {!collapsed && <span className="sb__label">{item.label}</span>}
+            </button>
+          )
+        )}
+      </nav>
+
+      {/* ── FOOTER ── */}
+      <div className="sb__footer">
+        <div className="sb__divider" />
+        <button
+          className="sb__item c"
+          onClick={() => keycloak.logout()}
+          title="Logout"
+        >
+          <i className="pi pi-sign-out sb__icon" />
+          {!collapsed && <span className="sb__label">Logout</span>}
+        </button>
+      </div>
+    </aside>
   );
 };
 
