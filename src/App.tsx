@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import keycloak from "./KeycloakService";
 
-// Pages
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -13,8 +12,8 @@ import NotificationsPage from "./pages/NotificationsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SalesReportPage from "./pages/SalesReportPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
-// Sidebar
 import Sidebar from "./components/Sidebar";
 import "./App.css";
 
@@ -23,6 +22,22 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+   
+    if (window.location.search.includes("kc_action_status=success")) {
+      localStorage.clear();
+      sessionStorage.clear();
+  
+      window.location.replace(
+        `http://localhost:9090/realms/MyAppRealm/protocol/openid-connect/auth` +
+        `?client_id=spring-boot-app` +
+        `&redirect_uri=${encodeURIComponent(window.location.origin)}` +
+        `&response_type=code` +
+        `&scope=openid` +
+        `&prompt=login`
+      );
+      return;
+    }
+
     keycloak
       .init({
         onLoad: "login-required",
@@ -48,7 +63,7 @@ const App: React.FC = () => {
         <Sidebar />
         <div className="app-content">
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
@@ -59,6 +74,7 @@ const App: React.FC = () => {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/reports/sales" element={<SalesReportPage />} />
             <Route path="/reports/analytics" element={<AnalyticsPage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
           </Routes>
         </div>
       </div>
