@@ -61,6 +61,13 @@ const cards: CardItem[] = [
     color: "#E50914",
   },
   {
+    title: "Change Password",
+    description: "Update your account password securely.",
+    icon: "pi-lock",
+    path: "/change-password",
+    color: "#E50914",
+  },
+  {
     title: "About",
     description: "Learn more about this application.",
     icon: "pi-info-circle",

@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import keycloak from "../KeycloakService";
 import { useState } from "react";
 import "./Sidebar.css";
-import logo from "../logo/logo.svg";
+import logo from "../assets/logo.svg";
 
 interface NavItem {
   label: string;
@@ -26,8 +26,9 @@ const navItems: NavItem[] = [
   {
     label: "User", icon: "pi-users",
     children: [
-      { label: "Profile",  icon: "pi-id-card",      path: "/profile" },
-      { label: "Settings", icon: "pi-cog",          path: "/settings" },
+      { label: "Profile",          icon: "pi-id-card",  path: "/profile" },
+      { label: "Settings",          icon: "pi-cog",      path: "/settings" },
+      { label: "Change Password",   icon: "pi-lock",     path: "/change-password" },
     ],
   },
   { label: "About",    icon: "pi-info-circle",  path: "/about" },
