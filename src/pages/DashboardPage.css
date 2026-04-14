@@ -85,7 +85,7 @@
 }
 
 .dp__change i      { font-size: 0.7rem; }
-.dp__change--up    { color: #2ed573; }
+.dp__change--up    { color:rgba(202, 218, 208, 0.85); }
 .dp__change--down  { color: #E50914; }
 
 .dp__chart--bar { height: 380px; }
